@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>twitch tv list</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+    
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body,html{
+            height: 100%;
+        }
+        #wrapper{
+            margin: 7%;
+            max-width: 1000px;
+            height: 500px;
+            border:1px solid #2c2541;
+            display: flex;
+            border-radius: 0 5% 5% 0;
+            box-shadow: 5px 10px 10px #000;
+        }
+        .channels{
+            width: 30%;
+            background-color: #2c2541;
+            height: 100%;
+           
+            position: relative;
+        }
+        .searchField{
+            position: absolute;
+            bottom: 0;
+            border-top: 2px solid #392e5c;
+            width: 100%;
+            height: 45px;
+             box-sizing: border-box;
+            -webkit-box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            -ms-box-sizing:border-box;
+             padding: 5px; 
+            
+        }
+        .search_container{
+            display: flex;
+            height: 30px;
+            box-shadow:inset 0 0 0 1px #392e5c, 0 0 0 transparent;
+            background-color:#201c2b;
+            outline: 0px;
+            border: 0px;
+        }
+        .icon{
+            margin: 4px 4px 0px 7px;
+            border: 0px;  
+           color: #fff;
+        }
+          .search{
+            box-sizing: border-box;
+            -webkit-box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            -ms-box-sizing:border-box;
+            border: 0px;
+            background-color: transparent;
+            width: 100%;
+            color:#cbc8d0;
+            padding-left: 10px;
+            
+        }
+        .buttons{
+            display: flex;
+        }
+        .online,.offline,.all{
+           
+            display: flex;
+            width: 55px;
+            height: 35px;
+            border:2px solid #392e5c;
+            border-radius: 50%;
+            color: white;
+             font-family: 'Merriweather', serif;
+            align-items: center;
+            justify-content: center;
+            margin-left: 7px;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+        }
+        .online:active ,.offline:active ,.all:active{
+            box-shadow: 0px 0px 0px black;
+        }
+        
+        .title{
+            color: #cbc8d0;
+            font-size: 1.1em;
+            margin-left: 7px;
+            padding-bottom: 3px;
+            font-weight: 700;
+            box-shadow: 0 -1px 0 #392e5c inset;
+        }
+        
+        
+        .screen{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 80%;
+            background:#151414;
+            border-radius: 0 5% 5% 0;
+            
+            
+        }
+        .screen img{
+            width: 50%;
+            height: 50%;
+            
+        }
+        
+        .channelsFollowed{
+            height: 74%;
+            max-width: 100%;
+            overflow-y: auto;
+        }
+        
+       
+        .channelsFollowed li{
+            display:flex;
+            max-width: 100%;
+           margin: 0 8px 5px 0px;
+            cursor: pointer;
+            position: relative;
+           overflow: hidden;
+        }
+        .channelsFollowed li::after{
+            content: "";
+            border: 3px solid rgba(255,0,0,0.5);
+            position: absolute;
+            top:0;
+            bottom: 0;
+            right: 0;
+            margin-left: 10px;
+           
+        }
+        
+         ul>li > span {
+             flex:3;
+            display: inline-block;
+            color: #cbc8d0;
+            font-size: 15px;
+           font-family: 'Merriweather', serif;
+            margin-right: 8px;
+           
+        }
+        ul >li > img{
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+        }
+        ul >li:hover{
+            background-color: rgba(0,0,0,0.5);
+            box-shadow: 3px 5px 5px rgba(0,0,0,0.9);
+           
+        }
+        ul>li:active{
+             box-shadow: 0 0 0 rgba(0,0,0,0.9);
+        }
+        
+     
+        
+           ul >li.on::after{
+            content: "";
+            border: 3px solid green;
+        }
+        ul >li.off::after{
+            content: "";
+            border: :3px solid red;
+        }
+        .channelInfos{
+            border: 3px solid black;
+            background-color:rgba(0,0,0,0.6);
+            box-shadow: 10px 5px 7px rgba(0,0,0,1);
+        }
+        .information{
+            list-style: none;
+            color: #cbc8d0;
+            
+        }
+      
+        .logo{
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .logo img{
+            
+            width: 65px;
+            height: 55px;
+            
+        }
+        .addTo,.deleteFrom,.check{
+            display: block;
+            margin-bottom: 5px;
+            padding-top:7px;
+            height: 38px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #201c2b;
+            color: #cbc8d0;
+            font-size: 15px;
+            font-style: italic;
+        }
+        .information li:hover{
+            background-color: transparent;
+            box-shadow: 0 0 0 transparent;
+        }
+        .errorMessage{
+            color: #cbc8d0;
+        }
+        
+       
+    
+        @media screen and (max-width:1078px){
+            
+            #wrapper{
+                max-width: 850px;
+                margin-left: 15px;
+                margin-right: 50px;
+            }
+            .channelsFollowed li{
+                margin-left: 0;
+            } 
+            .channelsFollowed span{
+                font-size: 14px;
+            }
+            .search{
+                font-size: 13px;
+            }
+          
+        }
+        
+          @media screen and (max-width:915px){
+              #wrapper{
+                    
+                  margin: 10% auto;
+                   border-radius: 0 5% 5% 0;
+                  flex-flow: wrap;
+              }
+              .screen{
+                  width: 100%;
+                  height: 60%;
+                   border-radius: 0 5% 0 0;
+                  
+              }
+             
+              .channels{
+                  order: 1;
+                  width: 100%;
+                  height: 200px;
+              }
+              .channelsFollowed li{
+                  display: inline-block;
+                  width: 165px;
+                  margin-left: 5px;
+              }
+              .channelsFollowed li span{
+                  width: 57%;
+              }
+              .search{
+                 max-width: initial;
+                 width: 100%;
+              }
+              .channelsFollowed{
+                  height: 36%;
+              }
+             
+              
+              
+               
+        }
+      
+        
+        
+        
+    
+    </style>
+    
+</head>
+<body>
+ 
+    <div id="wrapper">
+        
+        <div class="channels">
+          <div class="searchField">
+                <div class="search_container">
+                      <div class="icon"><i class="glyphicon glyphicon-user"></i></div>
+                      <input type="text" class="search" placeholder="search for channels">
+                 </div>
+            </div>
+             <div class="buttons">
+                   <div class="online ">online</div>
+                   <div class="offline">offline</div>
+                   <div class="all">all</div>
+                   
+               </div>
+            <h3 class="title">Followed Channels</h3>
+            <div class="channelsFollowed">
+                <ul class="list">
+                 
+                    
+                </ul>
+            </div>
+            
+        </div>
+        <div class="screen">
+           <img src="images/my-logo2.png" alt="">
+           
+               
+               
+           
+           
+           
+           
+        </div>
+        
+    </div>
+   
+    <script>
+        var allContent="";
+    
+    $(function(){
+     
+      let api="https://api.twitch.tv/kraken/channels/";
+      let key="client_id=ryle8toywg1w0am888ktbp3goki5e0";
+      //using the array that's stored in the localStorge , if that one is undefined use the streams array
+     let streams;
+     if(localStorage.getItem("sreams")!==undefined){
+       streams=JSON.parse(localStorage.getItem("streams"));
+     }else{
+       streams=["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas","MedryBW"];
+      localStorage.setItem("streams",JSON.stringify(streams));
+     }
+      let search=$(".search");
+      search.click(handleInputClick);
+      search.blur(blurInput);
+      
+      let online=document.querySelector(".online");
+      let offline=$(".offline");
+      let all=$(".all");
+      
+      init(streams,api,key);
+      online.addEventListener("click",displayOnline);
+      offline.click(displayOffline);
+      all.click(displayAll);
+        
+     
+   
+      
+      
+      });
+    
+        
+        function init(streams,api,key){
+          
+          streams.forEach((stream)=>{
+             getDetails(api,stream,key);
+          
+          });
+            
+        }
+    
+        function getDetails(api,title,key){
+            
+            $.getJSON(api+title+"?"+key,function(data){
+               let list=document.querySelector(".channelsFollowed ul");
+               let status=checkStatus("https://wind-bow.glitch.me/twitch-api/streams/"+title);
+            
+               let infos=`
+                      <span class="channelTitle ${title}">${title}</span><img src="${data.logo !==null ? data.logo : "images/interogation.jpg"}" alt="channel's logo" />
+
+                    `;
+               
+                let li=document.createElement("li");
+                li.classList.add("channel");
+                li.innerHTML=infos;
+                list.appendChild(li);
+                
+                 checkStatus("https://wind-bow.glitch.me/twitch-api/streams/"+title,title);
+                
+              
+             li.addEventListener("click",function(){
+                 displayChannelInfos(li.querySelector("span").textContent);
+             });
+             allContent=document.querySelectorAll("ul li");
+           
+            });
+            
+           
+        };
+        
+        function handleInputClick(){
+          this.style.outline="none";
+          this.parentNode.style.outline="3px solid black"; 
+         this.addEventListener("keydown",startFetching);
+        }
+        function blurInput(){
+            this.parentNode.style.outline="0";
+           
+        }
+        function startFetching(e){
+          if(e.which===13){
+             displayChannelInfos(this.value);
+          }
+        }
+        function checkStatus(url,title){
+            
+            return $.getJSON(url,(data)=>{
+               if(data.stream!==null){
+                   if(document.querySelector("."+title)!==null){
+                       
+                   document.querySelector("."+title).setAttribute("data-status","online");
+                       handleStats(document.querySelector("."+title));
+                   }
+               }else{
+                   if( document.querySelector("."+title) !==null){
+                       
+                   document.querySelector("."+title).setAttribute("data-status","offline");
+                       handleStats(document.querySelector("."+title));
+                   }
+               }
+                
+            });
+              
+        
+        }
+         function handleStats(li){
+             
+               if(li.getAttribute("data-status")==="online"){
+                  li.parentNode.classList.add("on");
+               }else{
+                   li.parentNode.classList.add("off");
+               }
+             
+            }
+    function displayOnline(){
+        let list=document.querySelector("ul");
+        
+        if(allContent===undefined){
+        var content=list.querySelectorAll("li");
+        }else{
+        var content=allContent;
+        }
+        let all=list.innerHTML;
+        var inner="";
+        
+        list.innerHTML="";
+        
+        
+        content.forEach(li=>{
+          
+           if(li.querySelector("span").getAttribute("data-status") ==="online"){
+              
+               list.appendChild(li);  
+               
+           }
+        }); 
+    
+       return content;
+    }
+        
+        function displayOffline(){
+            let list=document.querySelector("ul");
+          if(allContent===undefined){
+               var content=list.querySelectorAll("li");
+          }else{
+               var content=allContent;
+          }
+            list.innerHTML="";
+             
+            content.forEach(li=>{
+
+               if(li.querySelector("span").getAttribute("data-status") ==="offline"){
+
+                   list.appendChild(li);  
+
+               }
+        }); 
+            return content;
+        }
+        
+        function displayAll(){
+            let list=document.querySelector("ul");
+            if(allContent===undefined){
+                 var content=list.querySelectorAll("li");
+            }else{
+                 var content=allContent;
+            }
+           
+            content.forEach(element=>{
+               list.appendChild(element); 
+            });
+            
+           return content;
+        
+        }
+        
+        function displayChannelInfos(title){
+           
+           $.getJSON("https://api.twitch.tv/kraken/channels/"+title+"?client_id=ryle8toywg1w0am888ktbp3goki5e0",function(data){
+                var screen= document.querySelector(".screen");
+               
+              var list=`
+                <ul class="information">
+                 <li class="items logo"><img src="${data.logo!==null ? data.logo :"images/interogation.jpg"}"/></li>
+                   <li class="items"><span class="name">name:</span>${data.name} </li>
+                   <li class="items"> <span class="game">game: ${data.game!==null?data.game:"not mentioned"}</span></li>
+                   <li class="items"><span class="createdAt">created at: ${data.created_at}</span></li>
+                   <li class="items"><span class="followers">followers:${data.followers}</span></li>
+                   <li class="items"><span class="views">views: ${data.views}</span></li>
+                   <li class="items"><a href="${data.url}" class="check" role="button">go to channel</a></li>
+                  
+            ` 
+               if(JSON.parse(localStorage.getItem("streams")).indexOf(title)>0){
+                     list+=`
+                     <li class="items"><a href="#" class="deleteFrom addOrRemove " data-name="${data.name}">remove channel</a></li>
+                </ul>
+                    `
+               }else{
+                   list+=`
+                <li class="items"><a href="#" class="addTo addOrRemove " data-name="${data.name}">add channel</a></li>
+                </ul>`
+               }
+              let div=document.createElement("div");
+              div.classList.add("channelInfos");
+               div.innerHTML=list;
+              
+               screen.innerHTML="";
+               screen.appendChild(div);
+               if(data.video_banner!==null){
+               screen.style.backgroundImage=`url("${data.video_banner}")`;
+               screen.style.backgroundSize="cover";
+               }else{
+                   screen.style.background="#151414";
+               }
+               //binding click event on the addOrRemove class
+               //adding click event to the button and checking if it's add or remove
+               let button=document.querySelector(".addOrRemove");
+               button.addEventListener("click",addOrRemove);
+              
+              
+               
+           }).error(function(event, jqxhr, exception) {
+               
+    if (event.status == 404) {
+              var screen= document.querySelector(".screen");
+               var errorMessage=`<p class="errorMessage">the channel you are looking for doesn't exist</p>
+                `
+                   screen.innerHTML=errorMessage;
+                   screen.style.background="#151414";
+        }
+           });
+        }
+        
+        function addOrRemove(){
+             let api="https://api.twitch.tv/kraken/channels/";
+             let key="client_id=ryle8toywg1w0am888ktbp3goki5e0";
+             if(this.classList[0]==="deleteFrom"){
+                   let streams= JSON.parse(localStorage.getItem("streams"));
+                   let name=this.getAttribute("data-name");
+                   let index=streams.indexOf(name);
+                   //remove it from the streams array and save it in the localStorage
+                   streams.splice(index,1);
+                   console.log(streams);
+                   localStorage.setItem("streams",JSON.stringify(streams));
+                    //emptying the followed channels before redisplaying the new ones after the deletion
+                   document.querySelector(".channelsFollowed ul").innerHTML="";
+                   init(streams,api,key);
+               }else{
+                   //adding the channel
+                   let name=this.getAttribute("data-name");
+                   let streams=JSON.parse(localStorage.getItem("streams"));
+                   streams.push(name);
+                   localStorage.setItem("streams",JSON.stringify(streams));
+                   document.querySelector(".channelsFollowed ul").innerHTML="";
+                  init(streams,api,key);      
+                  
+               }
+        }
+    </script>      
+                 
+                               
+</body>
+</html>
